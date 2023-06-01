@@ -1574,3 +1574,25 @@ it('can set html contents from a file', function () {
 it('can not set html contents from a non-existent file', function () {
     Browsershot::htmlFromFilePath(__DIR__.'/temp/non-existent-file.html');
 })->throws(\Spatie\Browsershot\Exceptions\FileDoesNotExistException::class);
+
+it('can find a chrome binary in a path', function() {
+    file_put_contents(__DIR__.'/temp/chrome', '');
+
+    $targetPath = __DIR__.'/temp/fullpageScreenshot.png';
+
+    Browsershot::url('https://github.com/spatie/browsershot')
+        ->searchForChromeBinaryInPath(__DIR__ . '/temp/')
+        ->save($targetPath);
+
+    expect($targetPath)->not->toBeFile();
+})->throws(ProcessFailedException::class);
+
+it('does nothing if a chrome binary is not found in the path', function() {
+    $targetPath = __DIR__.'/temp/fullpageScreenshot.png';
+
+    Browsershot::url('https://github.com/spatie/browsershot')
+        ->searchForChromeBinaryInPath(__DIR__ . '/temp/missing/')
+        ->save($targetPath);
+
+    expect($targetPath)->toBeFile();
+});
