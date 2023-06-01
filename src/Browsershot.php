@@ -823,6 +823,31 @@ class Browsershot
         return $this->html ? $this->setOption('contentUrl', $contentUrl) : $this;
     }
 
+    public function searchForChromeBinaryInPath(string $path, string $binaryName = 'chrome'): self
+    {
+        if (!is_dir($path)) {
+            return $this;
+        }
+
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
+
+        $chromePath = null;
+
+        foreach ($iterator as $file) {
+            if ($file->isFile() && $file->getFilename() === $binaryName) {
+                $chromePath = $file->getRealPath();
+                break;
+            }
+        }
+
+        if ($chromePath) {
+            $this->setChromePath($chromePath);
+        }
+
+        return $this;
+
+    }
+
     protected function getOptionArgs(): array
     {
         $args = $this->chromiumArguments;
