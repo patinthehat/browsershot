@@ -825,7 +825,7 @@ class Browsershot
 
     public function searchForChromeBinaryInPath(string $path, string $binaryName = 'chrome'): self
     {
-        if (!is_dir($path)) {
+        if (! is_dir($path)) {
             return $this;
         }
 
@@ -836,6 +836,7 @@ class Browsershot
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getFilename() === $binaryName) {
                 $chromePath = $file->getRealPath();
+
                 break;
             }
         }
